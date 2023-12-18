@@ -1,0 +1,3 @@
+__pycache__/
+preprocess/models/bert-base-chinese/pytorch_model.bin
+preprocess/models/bert-base-chinese/tf_model.h5
