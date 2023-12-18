@@ -2,8 +2,9 @@ import requests
 from lxml import etree
 from urllib.parse import quote
 from datetime import datetime, timedelta
-from data_processing import merge_to_csv
+from data_processing import weibo_store_data, zhihu_store_data
 from tqdm import trange
+from bs4 import BeautifulSoup
 
 weibo_cookies = {
     "SUB": "_2A25IehvkDeRhGeFG7FQZ-CrMyTuIHXVr9hEsrDV8PUNbmtANLVnzkW9NeMOQzQXE2ovsA6XuvU7LOwyQ9weBk0UO",
@@ -25,8 +26,8 @@ def _debug_show_resp(resp, addition_msg=None):
     print("----------------------------------------------------")
 
 
-def create_weibo_search_url(topic, search_days_range,weibo_session):
-    print(f"Preparing urls within {search_days_range} to search...")
+def create_weibo_search_url(topic, search_days_range, weibo_session):
+    print(f"Preparing url within {search_days_range} in weibo to search...")
     start_datetime = datetime.strptime(search_days_range[0], "%Y-%m-%d-%H")
     end_datetime = datetime.strptime(search_days_range[1], "%Y-%m-%d-%H")
     current_datetime = start_datetime
@@ -39,19 +40,19 @@ def create_weibo_search_url(topic, search_days_range,weibo_session):
     for day_idx in range(len(date_range) - 1):
         base_url = "https://s.weibo.com/realtime?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
 
-        test=weibo_session.get(base_url+"1")
+        test = weibo_session.get(base_url + "1")
         html = test.text
         tree = etree.HTML(html)
-        pages=tree.xpath('//*[@id="pl_feedlist_index"]/div[5]/div/span/ul/li')
+        pages = tree.xpath('//*[@id="pl_feedlist_index"]/div[5]/div/span/ul/li')
         # print(len(pages),base_url+'1')
-        if len(pages)==0:
-            url_list.append(base_url +'1')
-        for i in range(1, len(pages)+1):
+        if len(pages) == 0:
+            url_list.append(base_url + '1')
+        for i in range(1, len(pages) + 1):
             url_list.append(base_url + str(i))
     return url_list
 
 
-def extract_data_from_response(rsp):
+def extract_data_from_weibo_response(rsp):
     results = []
     html = rsp.text
     tree = etree.HTML(html)
@@ -74,13 +75,12 @@ def extract_data_from_response(rsp):
     return results
 
 
-def crawl_topic(topic, result_file_path, search_days_range):
+def weibo_crawl_topic(topic, result_file_path, search_days_range):
     weibo_session = requests.Session()
     weibo_session.cookies.update(weibo_cookies)
 
-    url_list = create_weibo_search_url(topic, search_days_range,weibo_session)
-    print(f"Ready to crawl [{len(url_list)}] url, the first is {url_list[0]}",'\n')
-
+    url_list = create_weibo_search_url(topic, search_days_range, weibo_session)
+    print(f"Ready to crawl [{len(url_list)}] url of weibo, the first is {url_list[0]}", '\n')
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36',
@@ -91,10 +91,49 @@ def crawl_topic(topic, result_file_path, search_days_range):
         try:
             request_rsp = weibo_session.get(target_url, headers=headers)
             if request_rsp.status_code == 200:
-                page_rst = extract_data_from_response(request_rsp)
+                page_rst = extract_data_from_weibo_response(request_rsp)
                 total_rst += page_rst
             else:
                 print("Failed to crawl the page:", request_rsp.status_code)
         except Exception as e:
             print("ERROR:", e, " in url:", target_url)
-    merge_to_csv(total_rst, result_file_path, topic, 'Query time: ' + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    weibo_store_data(total_rst, result_file_path, topic, 'Query time: ' + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+
+def extract_data_from_zhihu_response(json_data):
+    mydata = []
+    for data in json_data['data']:
+        # print(data["target_type"], data["target"]["answer_type"], data["target"]["author"]["user_type"], data["target"]["author"]["type"], data["target"]["author"]["gender"], data["target"]["comment_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M:%S'),
+        #       data["target"]["voteup_count"],data["target"]["excerpt"])
+
+        mydata.append([BeautifulSoup(data["target"]["content"], 'html.parser').get_text(), data["target"]["author"]["gender"], data["target"]["comment_count"], data["target"]["voteup_count"], datetime.fromtimestamp(data["target"]["updated_time"])])
+    return mydata
+
+
+def zhihu_search(question_number, zhihu_session, result_file_path):
+    questions_url = "https://www.zhihu.com/api/v4/questions/" + str(
+        question_number) + "/feeds?include=data%5B*%5D.is_normal%2Cadmin_closed_comment%2Creward_info%2Cis_collapsed%2Cannotation_action%2Cannotation_detail%2Ccollapse_reason%2Cis_sticky%2Ccollapsed_by%2Csuggest_edit%2Ccomment_count%2Ccan_comment%2Ccontent%2Ceditable_content%2Cattachment%2Cvoteup_count%2Creshipment_settings%2Ccomment_permission%2Ccreated_time%2Cupdated_time%2Creview_info%2Crelevant_info%2Cquestion%2Cexcerpt%2Cis_labeled%2Cpaid_info%2Cpaid_info_content%2Creaction_instruction%2Crelationship.is_authorized%2Cis_author%2Cvoting%2Cis_thanked%2Cis_nothelp%3Bdata%5B*%5D.mark_infos%5B*%5D.url%3Bdata%5B*%5D.author.follower_count%2Cvip_info%2Cbadge%5B*%5D.topics%3Bdata%5B*%5D.settings.table_of_content.enabled&offset=0&limit=5&order=updated"
+    zhihu_first_rsp = zhihu_session.get(questions_url)
+    json_data = zhihu_first_rsp.json()
+    topic_name = json_data['data'][0]["target"]["question"]["title"]
+    topic_created_time = datetime.fromtimestamp(json_data['data'][0]["target"]["question"]["updated_time"])
+    topic_id = json_data['data'][0]["target"]["question"]["id"]
+
+    total_data = []
+    page_count = 1
+    print("Ready to search zhihu question [", topic_name, "] created at", topic_created_time, 'with id', topic_id)
+    while not json_data['paging']['is_end']:
+        total_data += extract_data_from_zhihu_response(json_data)
+        next_url = json_data['paging']['next']
+        if page_count % 10 == 0:
+            print("In", page_count, "turns collected", len(total_data), "answers")
+        json_data = zhihu_session.get(next_url).json()
+        page_count += 1
+
+    print(len(total_data))
+    zhihu_store_data(total_data, result_file_path, topic_name)
+
+
+def zhihu_crawl_topic(question_number, result_file_path):
+    zhihu_session = requests.Session()
+    zhihu_search(question_number, zhihu_session, result_file_path)
