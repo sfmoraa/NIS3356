@@ -30,20 +30,23 @@ def bert_process(filename: str, batch_size: int = 32, max_length: int = 50, devi
     dataloader = DataLoader(dataset, batch_size=batch_size)
 
     # Process the text in batches
-    all_features = []
+    last_hidden_states = []
+    pooler_outputs = []
     with torch.no_grad():
         for batch in dataloader:
             batch_input_ids, batch_attention_mask = batch
             batch_input_ids = batch_input_ids.to(device)
             batch_attention_mask = batch_attention_mask.to(device)
-
             # Get features from BERT model
             outputs = model(batch_input_ids, attention_mask=batch_attention_mask)
-            features = outputs.last_hidden_state
-
-            all_features.append(features)
+            last_hidden_state = outputs.last_hidden_state
+            pooler_output = outputs.pooler_output
+            last_hidden_states.append(last_hidden_state)
+            pooler_outputs.append(pooler_output)
 
     # Concatenate features from all batches
-    features = torch.cat(all_features, dim=0)
-
-    return features
+    last_hidden_states = torch.cat(last_hidden_states, dim=0)
+    last_hidden_states = last_hidden_states.detach().cpu().numpy()
+    pooler_outputs = torch.cat(pooler_outputs, dim=0)
+    pooler_outputs = pooler_outputs.detach().cpu().numpy()
+    return last_hidden_states, pooler_outputs
