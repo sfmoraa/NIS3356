@@ -4,9 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 def process_time(time_str):
     # 将时间字符串解析为datetime对象
-    current_year = datetime.now().year
-    datetime_str = f"{current_year}年" + time_str
-    datetime_obj = datetime.strptime(datetime_str, "%Y年%m月%d日 %H:%M")
+    datetime_obj = datetime.strptime(time_str, "%Y-%m-%d %H:%M")
     
     # 提取日期、小时和分钟
     year = datetime_obj.year
@@ -20,7 +18,6 @@ class plot():  ## 传入一个dataframe
     def __init__(self,textdata):
         self.data = textdata
         self.data[["year", "month","day", "hour", "minute"]] = self.data["time"].apply(lambda x: pd.Series(process_time(x)))
-        print(self.data)
     def Review_amount(self,step = "day",minlength = 0,start_date = "2023-01-01",end_date = "2023-12-31"):   ## 评论数量变化
         start_date = pd.to_datetime(start_date)
         end_date = pd.to_datetime(end_date)

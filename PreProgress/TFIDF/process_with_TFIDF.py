@@ -1,9 +1,10 @@
-import re
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
 import jieba
-import numpy as np
-from gensim.models import Word2Vec
+import matplotlib.pyplot as plt
 from PreProgress.utils import process_csv
-
+import re
 
 def clean_text(text):
     """
@@ -31,8 +32,15 @@ def remove_stopwords(tokens):
     filtered_tokens = [token for token in tokens if token not in stopwords]
     return filtered_tokens
 
+def getstr(tokens):
+    """
+    Remove some stop words
+    """
+    result_str = ' '.join(tokens)
+    return result_str
 
-def word2vec_process(filename: str):
+
+def TFIDF_process(filename: str):
     """
     Using word2vec method to obtain word vectors
     """
@@ -43,19 +51,17 @@ def word2vec_process(filename: str):
     data['text'] = data['text'].apply(clean_text)
     data['tokens'] = data['text'].apply(tokenize)
     data['tokens'] = data['tokens'].apply(remove_stopwords)
+    data['tokens'] = data['tokens'].apply(getstr)
+    vectorizer = CountVectorizer()
+    transformer = TfidfTransformer()
+    tfidf = transformer.fit_transform(vectorizer.fit_transform(data['tokens']))
+    word = vectorizer.get_feature_names()      
+    print("word feature length: {}".format(len(word)))
+    tfidf_weight = tfidf.toarray() ## 权重
+
+    tsne = TSNE(n_components=2)
+    decomposition_data = tsne.fit_transform(tfidf_weight)   ## T-SNE降维
+    print(tfidf_weight.shape)
+    print(decomposition_data.shape)
+    return tfidf_weight
     
-    # Initial the Model
-    model = Word2Vec(data['tokens'], vector_size=100, window=5, min_count=1, workers=4)
-    
-    # Convert text to vectors
-    vectors = []
-    for tokens in data['tokens']:
-        token_vectors = [model.wv[token] for token in tokens if token in model.wv]
-        if token_vectors:
-            avg_vector = np.mean(token_vectors, axis=0)
-            vectors.append(avg_vector)
-        else:
-            # if the tag is not in the vocabulary, use zero vector padding
-            vectors.append(np.zeros(100))  
-    vectors = np.array(vectors)
-    return vectors
