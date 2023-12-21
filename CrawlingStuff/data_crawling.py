@@ -29,13 +29,13 @@ def _debug_show_resp(resp, addition_msg=None):
 
 def create_weibo_search_url(topic, search_days_range, weibo_session):
     print(f"Preparing url within {search_days_range} in weibo to search...")
-    start_datetime = datetime.strptime(search_days_range[0], "%Y-%m-%d-%H")
-    end_datetime = datetime.strptime(search_days_range[1], "%Y-%m-%d-%H")
+    start_datetime = datetime.strptime(search_days_range[0], "%Y-%m-%d")
+    end_datetime = datetime.strptime(search_days_range[1], "%Y-%m-%d")
     current_datetime = start_datetime
     date_range = []
     while current_datetime <= end_datetime:
         date_range.append(current_datetime.strftime("%Y-%m-%d-%H"))
-        current_datetime += timedelta(days=1)
+        current_datetime += timedelta(hours=1)
 
     url_list = []
     for day_idx in range(len(date_range) - 1):
