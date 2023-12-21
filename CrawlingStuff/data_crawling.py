@@ -7,7 +7,7 @@ from tqdm import trange
 from bs4 import BeautifulSoup
 
 weibo_cookies = {
-    "SUB": "_2A25IehvkDeRhGeFG7FQZ-CrMyTuIHXVr9hEsrDV8PUNbmtANLVnzkW9NeMOQzQXE2ovsA6XuvU7LOwyQ9weBk0UO",
+    "SUB": "你的cookie",
 }
 
 
