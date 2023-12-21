@@ -2,13 +2,14 @@ import requests
 from lxml import etree
 from urllib.parse import quote
 from datetime import datetime, timedelta
-from data_processing import weibo_store_data, zhihu_store_data
+from data_processing import *
 from tqdm import trange
 from bs4 import BeautifulSoup
 
 weibo_cookies = {
-    "SUB": "你的cookie",
+    "SUB": "_2A25IehvkDeRhGeFG7FQZ-CrMyTuIHXVr9hEsrDV8PUNbmtANLVnzkW9NeMOQzQXE2ovsA6XuvU7LOwyQ9weBk0UO",
 }
+assert weibo_cookies['SUB'] != "你的cookies"
 
 
 def _debug_show_resp(resp, addition_msg=None):
@@ -39,8 +40,7 @@ def create_weibo_search_url(topic, search_days_range, weibo_session):
     url_list = []
     for day_idx in range(len(date_range) - 1):
         base_url = "https://s.weibo.com/realtime?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
-
-        test = weibo_session.get(base_url + "1")
+        test = weibo_session.get(base_url + '1')
         html = test.text
         tree = etree.HTML(html)
         pages = tree.xpath('//*[@id="pl_feedlist_index"]/div[5]/div/span/ul/li')
@@ -70,7 +70,7 @@ def extract_data_from_weibo_response(rsp):
             string = string.strip()
             if not string:
                 continue
-            processed_time += string
+            processed_time += convert_weibo_time_format(string,datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         results.append([processed_text, processed_time])
     return results
 
@@ -106,7 +106,7 @@ def extract_data_from_zhihu_response(json_data):
         # print(data["target_type"], data["target"]["answer_type"], data["target"]["author"]["user_type"], data["target"]["author"]["type"], data["target"]["author"]["gender"], data["target"]["comment_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M:%S'),
         #       data["target"]["voteup_count"],data["target"]["excerpt"])
 
-        mydata.append([BeautifulSoup(data["target"]["content"], 'html.parser').get_text(), data["target"]["author"]["gender"], data["target"]["comment_count"], data["target"]["voteup_count"], datetime.fromtimestamp(data["target"]["updated_time"])])
+        mydata.append([BeautifulSoup(data["target"]["content"], 'html.parser').get_text(), data["target"]["author"]["gender"], data["target"]["comment_count"], data["target"]["voteup_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M')])
     return mydata
 
 
