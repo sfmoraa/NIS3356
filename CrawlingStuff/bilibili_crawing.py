@@ -11,41 +11,7 @@ headers = {
     # 添加其他必要的Headers
 }
 cookies = {
-    "bmg_src_def_domain": "i2.hdslb.com",
-    "b_lsid": "C1BEBCE5_18C7BACBC51",
-    "browser_resolution": "1528-742",
-    "bp_video_offset_1826123766": "875938771633176646",
-    "bili_ticket_expires": "1702987211",
-    "bili_ticket": "eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDI5ODcyNzEsImlhdCI6MTcwMjcyODAxMSwicGx0IjotMX0.WFQize_9Qmub_mAiSQYFQs0LPIuuQSPrvTvGVd_-G54",
-    "sid": "691srbf3",
-    "bili_jct": "3e344af1e6c9d9513acc4ccac02a91bb",
-    "bmg_af_switch": "1",
-    "CURRENT_QUALITY": "80",
-    "home_feed_column": "5",
-    "buvid_fp": "ece2f41e6308a4df3256f7ae6aef9b2f",
-    "is-2022-channel": "1",
-    "PVID": "2",
-    "FEED_LIVE_VERSION": "V8",
-    "fingerprint": "ece2f41e6308a4df3256f7ae6aef9b2f",
-    "SESSDATA": "6ec636a0%2C1718280062%2C8d324%2Ac2CjA5itCIzgNdg9ETxvNJZSyX4118h2Ajhdvm47BT0pe1W9ixPkh77LhSQXe0sa5nzCASVkhZRC1GazFMSTlnbHk4ZUtscVdWOUh2Ymo3NlgyRVZyeWUxWE1ZZlVuTmpURlp4aXBTYU1ydjNTejVSbTVfVHJKQ2ZLSFhSZlpVdmFMV3NuWE5pbnBRIIEC",
-    "i-wanna-go-back": "-1",
-    "header_theme_version": "CLOSE",
-    "DedeUserID__ckMd5": "0e898ac6eae5487e",
-    "CURRENT_FNVAL": "16",
-    "hit-new-style-dyn": "1",
-    "rpdid": "|(JJmY)YRkRu0J'uY)Rm)mJ|)",
-    "nostalgia_conf": "-1",
-    "hit-dyn-v2": "1",
-    "b_ut": "5",
-    "CURRENT_BLACKGAP": "0",
-    "DedeUserID": "1826123766",
-    "_uuid": "1D68B769-AE4D-1358-5257-9CCFDEDAA2D1089975infoc",
-    "buvid3": "DF2F5173-CB34-A680-A82C-D99D44F838BB91526infoc",
-    "enable_web_push": "DISABLE",
-    "buvid4": "C5B5574A-C227-1D96-8E35-235E831297FD92963-023052512-hGpvobNRkZ9UuqB%2B4ijuTg%3D%3D",
-    "buvid_fp_plain": "undefined",
-    "LIVE_BUVID": "AUTO1216990885422372",
-    "b_nut": "1684989291",
+    
 }
 def remove_animation_code(string):
     # 定义要匹配和替换的正则表达式模式
