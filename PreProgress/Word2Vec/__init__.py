@@ -1,0 +1,1 @@
+from .process_with_word2vec import word2vec_process
