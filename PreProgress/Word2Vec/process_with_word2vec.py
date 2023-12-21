@@ -55,6 +55,7 @@ def word2vec_process(filename: str):
             avg_vector = np.mean(token_vectors, axis=0)
             vectors.append(avg_vector)
         else:
-            vectors.append(np.zeros(100))  # 如果标记未在词汇表中，则使用零向量填充
+            # if the tag is not in the vocabulary, use zero vector padding
+            vectors.append(np.zeros(100))  
     vectors = np.array(vectors)
     return vectors
