@@ -39,7 +39,7 @@ def bert_process(filename: str, batch_size: int = 32, max_length: int = 50, devi
             batch_attention_mask = batch_attention_mask.to(device)
             # Get features from BERT model
             outputs = model(batch_input_ids, attention_mask=batch_attention_mask)
-            last_hidden_state = outputs.last_hidden_state
+            last_hidden_state = outputs.last_hidden_state[0]
             pooler_output = outputs.pooler_output
             last_hidden_states.append(last_hidden_state)
             pooler_outputs.append(pooler_output)
