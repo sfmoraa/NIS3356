@@ -120,7 +120,7 @@ def fetch_all_comments(video_id):
         page += 1
     return all_comments
 if __name__ == "__main__":
-    topic="#除夕不放假#"
+    topic="#张雪峰回应文科都是服务业#"
     result_file_path="./CrawlResult/bilibili_comments_"+topic+".csv"
     crawl_topic(topic,result_file_path)
 
