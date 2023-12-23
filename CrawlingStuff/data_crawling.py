@@ -39,7 +39,7 @@ def create_weibo_search_url(topic, search_days_range, weibo_session):
 
     url_list = []
     for day_idx in range(len(date_range) - 1):
-        base_url = "https://s.weibo.com/realtime?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
+        base_url = "https://s.weibo.com/weibo?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
         test = weibo_session.get(base_url + '1')
         html = test.text
         tree = etree.HTML(html)
