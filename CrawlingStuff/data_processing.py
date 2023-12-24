@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 
 def weibo_store_data(data_list, output_path, topic, query_time):
-    df = pd.DataFrame(data_list, columns=[topic, query_time])
+    df = pd.DataFrame(data_list, columns=[topic, query_time,"likes"])
     df.to_csv(output_path, index=False, encoding='utf-8-sig')
 
 

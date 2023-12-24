@@ -7,7 +7,7 @@ from tqdm import trange
 from bs4 import BeautifulSoup
 
 weibo_cookies = {
-    "SUB": "_2A25IehvkDeRhGeFG7FQZ-CrMyTuIHXVr9hEsrDV8PUNbmtANLVnzkW9NeMOQzQXE2ovsA6XuvU7LOwyQ9weBk0UO",
+    "SUB": "_2A25Ig8-MDeRhGeFG7FQZ-CrMyTuIHXVr4U1ErDV8PUNbmtANLUPykW9NeMOQzWnbw8Ve_JWnxE7yEXFE2XeopVoL",
 }
 assert weibo_cookies['SUB'] != "你的cookies"
 
@@ -60,6 +60,7 @@ def extract_data_from_weibo_response(rsp):
     for comment in comments:
         texts = comment.xpath('./div/div[1]/div[2]/p/text()')
         comment_time = comment.xpath('./div/div[1]/div[2]/div[2]/a[1]/text()')
+        likes = comment.xpath('./div/div[2]/ul/li[3]/a/button/span[2]/text()')
         processed_text = processed_time = ''
         for string in texts:
             string = string.strip().replace('\u200b', '')
@@ -70,8 +71,12 @@ def extract_data_from_weibo_response(rsp):
             string = string.strip()
             if not string:
                 continue
-            processed_time += convert_weibo_time_format(string,datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        results.append([processed_text, processed_time])
+            processed_time += convert_weibo_time_format(string, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        if likes[0] == '赞':
+            likes = 0
+        else:
+            likes = int(likes[0])
+        results.append([processed_text, processed_time, likes])
     return results
 
 
