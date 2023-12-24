@@ -7,7 +7,7 @@ from tqdm import trange
 from bs4 import BeautifulSoup
 
 weibo_cookies = {
-    "SUB": "_2A25IehvkDeRhGeFG7FQZ-CrMyTuIHXVr9hEsrDV8PUNbmtANLVnzkW9NeMOQzQXE2ovsA6XuvU7LOwyQ9weBk0UO",
+    "SUB": "_2A25Ig8-MDeRhGeFG7FQZ-CrMyTuIHXVr4U1ErDV8PUNbmtANLUPykW9NeMOQzWnbw8Ve_JWnxE7yEXFE2XeopVoL",
 }
 assert weibo_cookies['SUB'] != "你的cookies"
 
@@ -39,7 +39,7 @@ def create_weibo_search_url(topic, search_days_range, weibo_session):
 
     url_list = []
     for day_idx in range(len(date_range) - 1):
-        base_url = "https://s.weibo.com/realtime?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
+        base_url = "https://s.weibo.com/weibo?q=" + quote(topic) + "&typeall=1&suball=1&timescope=custom%3A" + date_range[day_idx] + "%3A" + date_range[day_idx + 1] + "&Refer=g&page="
         test = weibo_session.get(base_url + '1')
         html = test.text
         tree = etree.HTML(html)
@@ -60,6 +60,7 @@ def extract_data_from_weibo_response(rsp):
     for comment in comments:
         texts = comment.xpath('./div/div[1]/div[2]/p/text()')
         comment_time = comment.xpath('./div/div[1]/div[2]/div[2]/a[1]/text()')
+        likes = comment.xpath('./div/div[2]/ul/li[3]/a/button/span[2]/text()')
         processed_text = processed_time = ''
         for string in texts:
             string = string.strip().replace('\u200b', '')
@@ -70,8 +71,12 @@ def extract_data_from_weibo_response(rsp):
             string = string.strip()
             if not string:
                 continue
-            processed_time += convert_weibo_time_format(string,datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        results.append([processed_text, processed_time])
+            processed_time += convert_weibo_time_format(string, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        if likes[0] == '赞':
+            likes = 0
+        else:
+            likes = int(likes[0])
+        results.append([processed_text, processed_time, likes])
     return results
 
 
