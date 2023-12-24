@@ -2,8 +2,12 @@
 import numpy as np
 from gensim.models import Word2Vec
 from PreProgress.utils import *
-
-
+import gensim
+import gensim.corpora as corpora
+from gensim.utils import simple_preprocess
+from gensim.models import CoherenceModel
+from gensim import corpora, models, similarities
+import matplotlib.pyplot as plt
 
 
 
@@ -18,7 +22,7 @@ def word2vec_process(filename: str):
     data['text'] = data['text'].apply(clean_text)
     data['tokens'] = data['text'].apply(tokenize)
     data['tokens'] = data['tokens'].apply(remove_stopwords)
-    
+
     # Initial the Model
     model = Word2Vec(data['tokens'], vector_size=100, window=5, min_count=1, workers=4)
     
@@ -31,6 +35,6 @@ def word2vec_process(filename: str):
             vectors.append(avg_vector)
         else:
             # if the tag is not in the vocabulary, use zero vector padding
-            vectors.append(np.zeros(100))  
+            vectors.append(np.zeros(100))              
     vectors = np.array(vectors)
     return vectors

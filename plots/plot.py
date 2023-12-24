@@ -65,7 +65,7 @@ class plot():  ## 传入一个dataframe
                          width = 1000,
                          height = 700,
                          background_color='white',
-                         max_words=100,stopwords=stopwords)
+                         max_words=30,stopwords=stopwords)
         wc.generate(tokens_list)
         wc.to_file("plots/figures/" +savefile)
     

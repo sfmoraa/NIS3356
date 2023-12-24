@@ -6,9 +6,9 @@ import jieba
 def process_csv(filename: str, with_labels = False):
     assert filename.endswith('.csv'), f'filename is invalid!'
     if with_labels == True:
-        ori_data = pd.read_csv(filename)
+        ori_data = pd.read_csv(filename,encoding='gb18030')
     else:
-        ori_data = pd.read_csv(filename, names=['text','time'])[1:]
+        ori_data = pd.read_csv(filename, names=['text','time'],encoding='gb18030')[1:]
     data = ori_data.dropna()
     data = data[~data['text'].str.startswith('【')]
     return data
@@ -52,7 +52,7 @@ def remove_stopwords(tokens):
     """
     Remove some stop words
     """
-    stopwords = set(['的', '了', '是', '在', '我', '有', '和', '就', '不', '人','你','吧','啊'])
+    stopwords = [line.strip() for line in open('PreProgress\cn_stopwords.txt', 'r', encoding='UTF-8').readlines()]
     filtered_tokens = [token for token in tokens if token not in stopwords]
     return filtered_tokens
 
