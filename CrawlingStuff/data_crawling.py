@@ -155,9 +155,22 @@ def extract_data_from_zhihu_response(json_data):
     for data in json_data['data']:
         # print(data["target_type"], data["target"]["answer_type"], data["target"]["author"]["user_type"], data["target"]["author"]["type"], data["target"]["author"]["gender"], data["target"]["comment_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M:%S'),
         #       data["target"]["voteup_count"],data["target"]["excerpt"])
-
-        mydata.append([BeautifulSoup(data["target"]["content"], 'html.parser').get_text(), data["target"]["author"]["gender"], data["target"]["comment_count"], data["target"]["voteup_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M')])
+        IP=get_zhihu_user_info(data["target"]["author"]["url_token"])
+        mydata.append([BeautifulSoup(data["target"]["content"], 'html.parser').get_text(), data["target"]["author"]["gender"], data["target"]["comment_count"], data["target"]["voteup_count"], datetime.fromtimestamp(data["target"]["updated_time"]).strftime('%Y-%m-%d %H:%M'),IP])
     return mydata
+
+
+def get_zhihu_user_info(name):
+    url="https://www.zhihu.com/people/"+name
+    html=requests.get(url).text
+    tree = etree.HTML(html)
+    try:
+        location = tree.xpath('//*[@id="ProfileHeader"]/div/div[1]/div/div/text()')[0][5:]
+    except:
+        location="未知"
+        print("nooooo",name)
+    return location
+
 
 
 def zhihu_search(question_number, zhihu_session, result_file_path):
@@ -168,6 +181,7 @@ def zhihu_search(question_number, zhihu_session, result_file_path):
     topic_name = json_data['data'][0]["target"]["question"]["title"]
     topic_created_time = datetime.fromtimestamp(json_data['data'][0]["target"]["question"]["updated_time"])
     topic_id = json_data['data'][0]["target"]["question"]["id"]
+
 
     total_data = []
     page_count = 1
@@ -189,4 +203,4 @@ def zhihu_crawl_topic(question_number, result_file_path):
     zhihu_search(question_number, zhihu_session, result_file_path)
 
 
-# get_weibo_user_info('1279809032')
+# get_zhihu_user_info("kai-chang-46")
