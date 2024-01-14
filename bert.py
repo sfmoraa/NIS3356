@@ -1,6 +1,6 @@
-from PreProgress import bert_process
+from model import bert_process
 from Cluster import kmeans
-from PreProgress.utils import divide_csv
+from model.utils import divide_csv
 
 filename = "CrawlingStuff\CrawlResult\WEIBO_#张雪峰回应文科都是服务业#.csv"
 last_hidden_states, pooler_outputs = bert_process(filename, device="cuda")

@@ -1,5 +1,5 @@
-from PreProgress.utils import process_csv
-from PreProgress import TFIDF_process
+from model.utils import process_csv
+from model import TFIDF_process
 from plots.plot import plot
 def plot_for_view_numbers():
     filename = "CrawlingStuff\CrawlResult\WEIBO_#张雪峰回应文科都是服务业#.csv"

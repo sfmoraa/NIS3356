@@ -1,15 +1,17 @@
-import numpy as np
 import torch 
 from torch.utils.data import TensorDataset
-from PreProgress.utils import process_csv
+from model.utils import process_csv
 from transformers import BertTokenizer, BertModel
 from torch.utils.data import DataLoader
 
 # https://huggingface.co/bert-base-chinese/tree/main
-BERT_PATH = "PreProgress/Bert/bert-base-chinese"
+BERT_PATH = "models/Bert/bert-base-chinese"
 
 
 def bert_process(filename: str, batch_size: int = 32, max_length: int = 50, device: str = "cpu"):
+    """
+    Using Bert Model to obtain word vectors
+    """
     assert filename.endswith('.csv'), 'Invalid filename!'
 
     # Load data from CSV file
