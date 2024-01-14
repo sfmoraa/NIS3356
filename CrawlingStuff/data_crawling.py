@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import time
 
 weibo_cookies = {
-    "SUB": "_2A25Ig8-MDeRhGeFG7FQZ-CrMyTuIHXVr4U1ErDV8PUNbmtANLUPykW9NeMOQzWnbw8Ve_JWnxE7yEXFE2XeopVoL",
+    "SUB": "你的cookies",
 }
 assert weibo_cookies['SUB'] != "你的cookies"
 
