@@ -1,6 +1,6 @@
 import torch 
 from torch.utils.data import TensorDataset
-from model.utils import process_csv
+from Models.utils import process_csv
 from transformers import BertTokenizer, BertModel
 from torch.utils.data import DataLoader
 
