@@ -1,7 +1,7 @@
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.manifold import TSNE
-from model.utils import process_csv
-from model.utils import clean_text, tokenize, remove_stopwords, getstr
+from Models.utils import process_csv
+from Models.utils import clean_text, tokenize, remove_stopwords, getstr
 
 
 def TFIDF_process(filename: str, with_labels = False):
