@@ -1,6 +1,0 @@
-**/__pycache__/**
-__pycache__/
-PreProgress/Bert/bert-base-chinese/pytorch_model.bin
-PreProgress/Bert/bert-base-chinese/model.safetensors
-PreProgress/Bert/bert-base-chinese/flax_model.msgpack
-PreProgress/Bert/bert-base-chinese/tf_model.h5
