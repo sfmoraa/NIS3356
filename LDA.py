@@ -1,6 +1,6 @@
 import numpy as np
 from gensim.models import Word2Vec
-from PreProgress.utils import *
+from model.utils import *
 import gensim
 import gensim.corpora as corpora
 from gensim.utils import simple_preprocess

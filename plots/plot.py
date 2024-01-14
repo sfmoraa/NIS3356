@@ -1,33 +1,42 @@
 from datetime import datetime
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import sys
-sys.path.append("..")
-from PreProgress.utils import *
+from model.utils import getstr, clean_text, tokenize, remove_stopwords
 from collections import Counter
 import wordcloud
 import seaborn as sns
-def process_time(time_str):
-    # 将时间字符串解析为datetime对象
+
+
+def process_time(time_str: str):
+    """
+    Retrieve time information from a time string
+    """
+    # Parse the time string into a datatime object
     datetime_obj = datetime.strptime(time_str, "%Y-%m-%d %H:%M")
-    
-    # 提取日期、小时和分钟
     year = datetime_obj.year
     month = datetime_obj.month
     day = datetime_obj.day
     hour = datetime_obj.hour
     minute = datetime_obj.minute
-    
-    return year, month,day, hour, minute
-class plot():  ## 传入一个dataframe
-    def __init__(self,textdata):
+    return year, month, day, hour, minute
+
+
+class plot():
+    def __init__(self, textdata: pd.DataFrame):
         self.data = textdata
-        self.data[["year", "month","day", "hour", "minute"]] = self.data["time"].apply(lambda x: pd.Series(process_time(x)))
+        self.data[["year", "month","day", "hour", "minute"]] = \
+            self.data["time"].apply(lambda x: pd.Series(process_time(x)))
         self.data['processed_text'] = self.data['text'].apply(clean_text)
         self.data['tokens'] = self.data['processed_text'].apply(tokenize)
         self.data['tokens'] = self.data['tokens'].apply(remove_stopwords)
-    def Review_amount(self,step = "day",minlength = 0,start_date = "2023-01-01",end_date = "2023-12-31"):   ## 评论数量变化
+    
+    def review_amount(
+        self, 
+        step: str="day",
+        minlength: int=0,
+        start_date: str="2023-01-01",
+        end_date: str="2023-12-31"
+    ):
         start_date = pd.to_datetime(start_date)
         end_date = pd.to_datetime(end_date)
         legends = ['topic1']
@@ -51,12 +60,14 @@ class plot():  ## 传入一个dataframe
         plt.ylabel('Amount')
         # plt.savefig("plots/figures/Review Amount per day.png", dpi=500, bbox_inches = 'tight')
         plt.show()
+
     def word_frequency(self):
         tokens_list = self.data["tokens"].tolist()
         tokens_list = [i for ii in tokens_list for i in ii]
         word_count = Counter(tokens_list)
         top_words = sorted(word_count.items(),key = lambda x : x[1], reverse=True)[:10]
         print(top_words)
+
     def word_cloud(self, savefile,stopwords):
         tokens_list = self.data["tokens"].tolist()
         tokens_list = [i for ii in tokens_list for i in ii]
@@ -69,7 +80,7 @@ class plot():  ## 传入一个dataframe
         wc.generate(tokens_list)
         wc.to_file("plots/figures/" +savefile)
     
-    def Review_length(self,start_date = "2023-01-01",end_date = "2023-12-31"):   ## 评论长度分布
+    def review_length(self,start_date = "2023-01-01",end_date = "2023-12-31"):   ## 评论长度分布
         start_date = pd.to_datetime(start_date)
         end_date = pd.to_datetime(end_date)
         review_length= self.data

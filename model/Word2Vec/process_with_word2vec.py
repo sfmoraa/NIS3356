@@ -1,14 +1,6 @@
-
 import numpy as np
 from gensim.models import Word2Vec
-from PreProgress.utils import *
-import gensim
-import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
-from gensim.models import CoherenceModel
-from gensim import corpora, models, similarities
-import matplotlib.pyplot as plt
-
+from model.utils import clean_text, process_csv, tokenize, remove_stopwords
 
 
 def word2vec_process(filename: str):
