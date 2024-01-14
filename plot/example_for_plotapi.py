@@ -1,5 +1,5 @@
-from Models.utils import process_csv
-from Plots.plot import plot
+from model.utils import process_csv
+from plot.plot import plot
 
 
 def plot_for_view_numbers():

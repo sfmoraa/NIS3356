@@ -1,6 +1,6 @@
 import numpy as np
 from gensim.models import Word2Vec
-from Models.utils import clean_text, process_csv, tokenize, remove_stopwords
+from model.utils import clean_text, process_csv, tokenize, remove_stopwords
 
 
 def word2vec_process(filename: str):

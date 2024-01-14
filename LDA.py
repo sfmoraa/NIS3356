@@ -1,12 +1,10 @@
 import numpy as np
-from gensim.models import Word2Vec
-from Models.utils import *
+from model.utils import *
 import gensim
 import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
 from gensim.models import CoherenceModel
-from gensim import corpora, models, similarities
 import matplotlib.pyplot as plt
+
 
 if __name__ == '__main__': 
     filename = "CrawlingStuff\CrawlResult\ZHIHU_如何评价张雪峰称文科都是服务业？.csv"

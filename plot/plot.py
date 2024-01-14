@@ -1,7 +1,7 @@
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
-from Models.utils import getstr, clean_text, tokenize, remove_stopwords
+from model.utils import getstr, clean_text, tokenize, remove_stopwords
 from collections import Counter
 import wordcloud
 import seaborn as sns
